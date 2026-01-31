@@ -101,14 +101,14 @@ def create_certificate_image(name, location, cert_id):
     # Text color - PURE BLACK
     text_color = "#000000"
     
-    # Overlay NAME - 30% from top (as requested)
-    name_y = int(height * 0.30)
+    # Overlay NAME - 33% from top (adjusted down from 30%)
+    name_y = int(height * 0.33)
     bbox = draw.textbbox((0, 0), name, font=name_font)
     name_width = bbox[2] - bbox[0]
     name_x = (width - name_width) // 2
     draw.text((name_x, name_y), name, fill=text_color, font=name_font)
     
-    # Overlay LOCATION - 50% from top (as requested)
+    # Overlay LOCATION - 50% from top (unchanged)
     location_y = int(height * 0.50)
     bbox = draw.textbbox((0, 0), location, font=location_font)
     location_width = bbox[2] - bbox[0]
