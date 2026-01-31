@@ -1,0 +1,220 @@
+import streamlit as st
+from PIL import Image, ImageDraw, ImageFont
+from pdf2image import convert_from_path
+from datetime import datetime
+import io
+import random
+import string
+import os
+
+# Page configuration
+st.set_page_config(
+    page_title="GEG Cert Gen - Sistem Sijil Digital",
+    page_icon="🏆",
+    layout="centered"
+)
+
+# Custom CSS
+st.markdown("""
+<style>
+    .main {
+        background-color: #f8fafc;
+    }
+    .stButton>button {
+        width: 100%;
+        background-color: #4F46E5;
+        color: white;
+        font-weight: bold;
+        padding: 0.75rem;
+        border-radius: 1rem;
+        border: none;
+        font-size: 1rem;
+    }
+    .stButton>button:hover {
+        background-color: #4338CA;
+    }
+    .header-box {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2rem;
+        border-radius: 1rem;
+        text-align: center;
+        margin-bottom: 2rem;
+        color: white;
+    }
+    .success-box {
+        background-color: #d1fae5;
+        border: 2px solid #6ee7b7;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin: 1rem 0;
+    }
+</style>
+""", unsafe_allow_html=True)
+
+# Header
+st.markdown("""
+<div class="header-box">
+    <h1>🏆 GEG Cert Gen</h1>
+    <p style="font-size: 0.9rem; opacity: 0.9;">Sistem Sijil Digital Pintar</p>
+    <p style="font-size: 0.8rem; margin-top: 0.5rem;">GEG Sabah x GEG Kelantan Collaboration</p>
+</div>
+""", unsafe_allow_html=True)
+
+def generate_cert_id():
+    """Generate unique certificate ID"""
+    prefix = "GEG"
+    year = datetime.now().year
+    random_str = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+    timestamp = hex(int(datetime.now().timestamp()))[2:].upper()
+    return f"{prefix}-{year}-{random_str}-{timestamp}"
+
+def create_certificate_from_pdf(name, location, cert_id, pdf_path):
+    """Create certificate by overlaying text on PDF template"""
+    
+    # Convert PDF to image
+    try:
+        images = convert_from_path(pdf_path, dpi=150)
+        template = images[0]  # Use first page
+    except Exception as e:
+        st.error(f"Error loading PDF: {e}")
+        return None
+    
+    # Convert to RGB if needed
+    if template.mode != 'RGB':
+        template = template.convert('RGB')
+    
+    width, height = template.size
+    draw = ImageDraw.Draw(template)
+    
+    # Load fonts
+    try:
+        name_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 85)
+        location_font = ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 36)
+        id_font = ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 20)
+    except:
+        name_font = ImageFont.load_default()
+        location_font = ImageFont.load_default()
+        id_font = ImageFont.load_default()
+    
+    # Color
+    text_color = '#1F2937'  # Dark gray
+    
+    # Draw participant name (centered, approximately at 37% from top)
+    name_y = int(height * 0.37)
+    name_bbox = draw.textbbox((0, 0), name, font=name_font)
+    name_width = name_bbox[2] - name_bbox[0]
+    name_x = (width - name_width) // 2
+    draw.text((name_x, name_y), name, fill=text_color, font=name_font)
+    
+    # Draw location (centered, approximately at 54% from top)
+    location_y = int(height * 0.54)
+    location_bbox = draw.textbbox((0, 0), location, font=location_font)
+    location_width = location_bbox[2] - location_bbox[0]
+    location_x = (width - location_width) // 2
+    draw.text((location_x, location_y), location, fill=text_color, font=location_font)
+    
+    # Draw certificate ID at bottom right
+    id_text = f"ID: {cert_id}"
+    id_x = width - 280
+    id_y = height - 50
+    draw.text((id_x, id_y), id_text, fill='#9CA3AF', font=id_font)
+    
+    return template
+
+# Initialize session state
+if 'certificate_generated' not in st.session_state:
+    st.session_state.certificate_generated = False
+if 'cert_image' not in st.session_state:
+    st.session_state.cert_image = None
+if 'cert_id' not in st.session_state:
+    st.session_state.cert_id = None
+
+# PDF upload section
+st.markdown("### 📄 Upload Template Sijil (PDF)")
+uploaded_pdf = st.file_uploader("Upload fail PDF sijil template", type=['pdf'], help="Upload fail Copy-of-JASMAN.pdf")
+
+if uploaded_pdf:
+    # Save uploaded PDF temporarily
+    pdf_path = "temp_certificate_template.pdf"
+    with open(pdf_path, "wb") as f:
+        f.write(uploaded_pdf.getbuffer())
+    st.success("✅ Template PDF berjaya dimuat naik!")
+else:
+    pdf_path = None
+    st.warning("⚠️ Sila upload template PDF untuk meneruskan")
+
+# Main form
+st.markdown("### 📝 Pendaftaran Sijil")
+st.markdown("Sila isi butiran anda untuk menjana sijil kolaborasi GEG Sabah x Kelantan.")
+
+with st.form("certificate_form"):
+    name = st.text_input("👤 Nama Penuh Peserta *", placeholder="Nama yang akan dipaparkan pada sijil")
+    location = st.text_input("📍 Institusi / Lokasi *", placeholder="Contoh: SK Jalan Reko / Sabah")
+    email = st.text_input("📧 Alamat E-mel *", placeholder="nama@email.com")
+    
+    col1, col2 = st.columns([3, 1])
+    with col1:
+        submit = st.form_submit_button("🚀 Jana Sijil Saya")
+    with col2:
+        if st.form_submit_button("🔄 Reset"):
+            st.session_state.certificate_generated = False
+            st.session_state.cert_image = None
+            st.session_state.cert_id = None
+            st.rerun()
+
+# Process form submission
+if submit:
+    if not name or not location or not email:
+        st.error("❌ Sila isi semua medan yang diperlukan!")
+    elif not pdf_path or not os.path.exists(pdf_path):
+        st.error("❌ Sila upload template PDF terlebih dahulu!")
+    else:
+        with st.spinner("🔄 Sedang memproses sijil anda..."):
+            cert_id = generate_cert_id()
+            cert_image = create_certificate_from_pdf(name, location, cert_id, pdf_path)
+            
+            if cert_image:
+                st.session_state.certificate_generated = True
+                st.session_state.cert_image = cert_image
+                st.session_state.cert_id = cert_id
+                st.session_state.name = name
+
+# Display certificate if generated
+if st.session_state.certificate_generated:
+    st.markdown("""
+    <div class="success-box">
+        <h4 style="color: #065f46; margin: 0;">✅ Sijil Rasmi GEG Berjaya Dijana!</h4>
+        <p style="color: #047857; margin: 0.5rem 0 0 0; font-size: 0.9rem;">
+            Sila muat turun salinan digital anda di bawah.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Display certificate
+    st.image(st.session_state.cert_image, use_container_width=True)
+    
+    # Download button
+    buf = io.BytesIO()
+    st.session_state.cert_image.save(buf, format='PNG', quality=95, dpi=(300, 300))
+    buf.seek(0)
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.download_button(
+            label="📥 Muat Turun Sijil (PNG)",
+            data=buf,
+            file_name=f"Sijil_{st.session_state.name.replace(' ', '_')}_GEG.png",
+            mime="image/png",
+            use_container_width=True
+        )
+    
+    st.markdown(f"**Certificate ID:** `{st.session_state.cert_id}`")
+
+# Footer
+st.markdown("---")
+st.markdown("""
+<p style="text-align: center; color: #9CA3AF; font-size: 0.8rem; margin-top: 2rem;">
+    Official Google Educator Groups Digital Achievement • 2026<br>
+    <span style="color: #10B981;">●</span> Verified Document
+</p>
+""", unsafe_allow_html=True)
