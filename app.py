@@ -259,7 +259,11 @@ st.markdown("""
 st.markdown("""
 <div class="header-box">
     <h1>🏆 GEG Sabah Cert Generator</h1>
-    <p style="font-size: 0.8rem;">GEG Sabah x GEG Kelantan Collaboration</p>
+    <p style="font-size: 0.8rem; margin-top: 0.5rem;">GEG Sabah x GEG Kelantan Collaboration</p>
+    <p style="font-size: 0.75rem; margin-top: 1rem; opacity: 0.9;">
+        Disediakan oleh Ts.Jebat - Leader GEG Sabah<br>
+        <a href="http://www.jebatlegacy.vip" target="_blank" style="color: white; text-decoration: underline;">www.jebatlegacy.vip</a>
+    </p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -288,7 +292,7 @@ def create_certificate_image(name, location, cert_id):
             try:
                 template = Image.open(template_path)
                 if template.mode != 'RGB':
-                    template = convert('RGB')
+                    template = template.convert('RGB')
                 break
             except Exception as e:
                 continue
