@@ -348,4 +348,39 @@ if st.session_state.cert_generated:
             Sijil telah dihantar ke email. Sila check inbox/spam folder.
         </p>
     </div>
-    """, uns
+    """, unsafe_allow_html=True)
+    
+    st.image(st.session_state.cert_image, use_container_width=True)
+    
+    pdf_buffer = image_to_pdf(st.session_state.cert_image)
+    png_buffer = io.BytesIO()
+    st.session_state.cert_image.save(png_buffer, format='PNG', quality=95)
+    png_buffer.seek(0)
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        st.download_button(
+            label="📄 Muat Turun PDF",
+            data=pdf_buffer,
+            file_name=f"Sijil_{st.session_state.name.replace(' ', '_')}_GEG.pdf",
+            mime="application/pdf",
+            use_container_width=True
+        )
+    with col2:
+        st.download_button(
+            label="🖼️ Muat Turun PNG",
+            data=png_buffer,
+            file_name=f"Sijil_{st.session_state.name.replace(' ', '_')}_GEG.png",
+            mime="image/png",
+            use_container_width=True
+        )
+    
+    st.info(f"📧 **Email:** {st.session_state.email}\n\n🆔 **Certificate ID:** `{st.session_state.cert_id}`")
+
+st.markdown("---")
+st.markdown("""
+<p style="text-align: center; color: #9CA3AF; font-size: 0.8rem;">
+    Official Google Educator Groups Digital Achievement • 2026<br>
+    <span style="color: #10B981;">●</span> Verified Document
+</p>
+""", unsafe_allow_html=True)
