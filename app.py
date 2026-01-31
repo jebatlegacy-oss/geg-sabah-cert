@@ -81,7 +81,7 @@ def create_certificate_image(name, location, cert_id):
     width, height = template.size
     draw = ImageDraw.Draw(template)
     
-    # ===== FONT LOADING - PERFECT SIZE & SPACING =====
+    # ===== FONT LOADING - PERFECT SIZE =====
     try:
         # Try Windows fonts first (for local testing)
         name_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 160)
@@ -101,15 +101,15 @@ def create_certificate_image(name, location, cert_id):
     # Text color - PURE BLACK
     text_color = "#000000"
     
-    # Overlay NAME - positioned higher (35% from top)
-    name_y = int(height * 0.35)
+    # Overlay NAME - 36% from top (moved down slightly)
+    name_y = int(height * 0.36)
     bbox = draw.textbbox((0, 0), name, font=name_font)
     name_width = bbox[2] - bbox[0]
     name_x = (width - name_width) // 2
     draw.text((name_x, name_y), name, fill=text_color, font=name_font)
     
-    # Overlay LOCATION - positioned lower (56% from top) - BIGGER GAP
-    location_y = int(height * 0.56)
+    # Overlay LOCATION - 54% from top (moved up) - CLOSER GAP!
+    location_y = int(height * 0.54)
     bbox = draw.textbbox((0, 0), location, font=location_font)
     location_width = bbox[2] - bbox[0]
     location_x = (width - location_width) // 2
