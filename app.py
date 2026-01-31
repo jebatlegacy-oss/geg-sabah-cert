@@ -148,44 +148,111 @@ iframe {
 </style>
 """, unsafe_allow_html=True)
 
-# ===== JAVASCRIPT TO AGGRESSIVELY HIDE FLOATING ELEMENTS =====
+# ===== ULTIMATE JAVASCRIPT - NUCLEAR OPTION =====
 st.markdown("""
 <script>
-// Wait for page load
-window.addEventListener('load', function() {
-    // Remove all fixed position elements in bottom-right
-    setTimeout(function() {
-        const elements = document.querySelectorAll('*');
-        elements.forEach(el => {
-            const style = window.getComputedStyle(el);
-            if (style.position === 'fixed') {
-                const bottom = parseInt(style.bottom);
-                const right = parseInt(style.right);
-                // If element is in bottom-right corner (within 100px)
-                if (bottom >= 0 && bottom < 100 && right >= 0 && right < 100) {
-                    el.style.display = 'none !important';
-                    el.style.visibility = 'hidden !important';
-                    el.remove();
-                }
-            }
-        });
-    }, 1000);
+(function() {
+    'use strict';
     
-    // Keep monitoring and removing (continuous check)
-    setInterval(function() {
-        const elements = document.querySelectorAll('*');
-        elements.forEach(el => {
-            const style = window.getComputedStyle(el);
-            if (style.position === 'fixed') {
-                const bottom = parseInt(style.bottom);
-                const right = parseInt(style.right);
-                if (bottom >= 0 && bottom < 100 && right >= 0 && right < 100) {
+    function nukeBottomRight() {
+        // Method 1: Remove by position
+        document.querySelectorAll('*').forEach(el => {
+            try {
+                const rect = el.getBoundingClientRect();
+                const style = window.getComputedStyle(el);
+                
+                // Check if element is in bottom-right corner
+                const isBottomRight = (
+                    rect.bottom > window.innerHeight - 150 && 
+                    rect.right > window.innerWidth - 150
+                );
+                
+                const isFixed = style.position === 'fixed' || style.position === 'absolute';
+                
+                if (isBottomRight && isFixed) {
                     el.remove();
                 }
-            }
+            } catch(e) {}
         });
-    }, 2000); // Check every 2 seconds
-});
+        
+        // Method 2: Remove by z-index (overlays usually high z-index)
+        document.querySelectorAll('*').forEach(el => {
+            try {
+                const style = window.getComputedStyle(el);
+                const zIndex = parseInt(style.zIndex);
+                
+                if (zIndex > 9000) { // High z-index = likely overlay
+                    const rect = el.getBoundingClientRect();
+                    if (rect.bottom > window.innerHeight - 200) {
+                        el.remove();
+                    }
+                }
+            } catch(e) {}
+        });
+        
+        // Method 3: Remove specific shadow DOM elements
+        document.querySelectorAll('*').forEach(el => {
+            try {
+                if (el.shadowRoot) {
+                    el.shadowRoot.querySelectorAll('*').forEach(shadowEl => {
+                        const style = window.getComputedStyle(shadowEl);
+                        if (style.position === 'fixed') {
+                            shadowEl.remove();
+                        }
+                    });
+                }
+            } catch(e) {}
+        });
+        
+        // Method 4: Remove elements with specific classes/IDs common in extensions
+        const badSelectors = [
+            '[class*="widget"]',
+            '[class*="overlay"]',
+            '[class*="popup"]',
+            '[class*="floating"]',
+            '[id*="widget"]',
+            '[id*="overlay"]',
+            '[id*="extension"]'
+        ];
+        
+        badSelectors.forEach(selector => {
+            try {
+                document.querySelectorAll(selector).forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.bottom > window.innerHeight - 200 && rect.right > window.innerWidth - 200) {
+                        el.remove();
+                    }
+                });
+            } catch(e) {}
+        });
+    }
+    
+    // Run immediately
+    nukeBottomRight();
+    
+    // Run after delays
+    setTimeout(nukeBottomRight, 500);
+    setTimeout(nukeBottomRight, 1000);
+    setTimeout(nukeBottomRight, 2000);
+    setTimeout(nukeBottomRight, 3000);
+    
+    // Keep running every 1 second
+    setInterval(nukeBottomRight, 1000);
+    
+    // Run on DOM changes
+    try {
+        const observer = new MutationObserver(nukeBottomRight);
+        observer.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
+    } catch(e) {}
+    
+    // Run on scroll/resize
+    window.addEventListener('scroll', nukeBottomRight);
+    window.addEventListener('resize', nukeBottomRight);
+    
+})();
 </script>
 """, unsafe_allow_html=True)
 
@@ -221,7 +288,7 @@ def create_certificate_image(name, location, cert_id):
             try:
                 template = Image.open(template_path)
                 if template.mode != 'RGB':
-                    template = template.convert('RGB')
+                    template = convert('RGB')
                 break
             except Exception as e:
                 continue
@@ -250,14 +317,14 @@ def create_certificate_image(name, location, cert_id):
     
     text_color = "#000000"
     
-    # Overlay NAME
+    # Overlay NAME - 37% from top
     name_y = int(height * 0.37)
     bbox = draw.textbbox((0, 0), name, font=name_font)
     name_width = bbox[2] - bbox[0]
     name_x = (width - name_width) // 2
     draw.text((name_x, name_y), name, fill=text_color, font=name_font)
     
-    # Overlay LOCATION
+    # Overlay LOCATION - 50% from top
     location_y = int(height * 0.50)
     bbox = draw.textbbox((0, 0), location, font=location_font)
     location_width = bbox[2] - bbox[0]
