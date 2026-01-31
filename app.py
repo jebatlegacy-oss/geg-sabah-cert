@@ -51,13 +51,24 @@ footer {
 iframe[title="GitHub"] {
     display: none !important;
 }
+/* Hide "Made with Streamlit" */
+footer:after {
+    content: none !important;
+}
+/* Hide bottom watermark */
+.viewerBadge_container__1QSob {
+    display: none !important;
+}
+/* Hide Streamlit branding completely */
+[data-testid="stStatusWidget"] {
+    display: none !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
 st.markdown("""
 <div class="header-box">
     <h1>🏆 GEG Sabah Cert Generator</h1>
-    <p style="font-size: 0.9rem;">Created by Ts.Jebat | <a href="http://www.jebatlegacy.vip" target="_blank" style="color: white; text-decoration: underline;">www.jebatlegacy.vip</a></p>
     <p style="font-size: 0.8rem;">GEG Sabah x GEG Kelantan Collaboration</p>
 </div>
 """, unsafe_allow_html=True)
@@ -294,6 +305,6 @@ st.markdown("---")
 st.markdown("""
 <p style="text-align: center; color: #9CA3AF; font-size: 0.8rem;">
     Official Google Educator Groups Digital Achievement • 2026<br>
-    <span style="color: #10B981;">●</span> Verified Document | Created by <a href="http://www.jebatlegacy.vip" target="_blank" style="color: #6366f1;">Ts.Jebat</a>
+    <span style="color: #10B981;">●</span> Verified Document
 </p>
 """, unsafe_allow_html=True)
