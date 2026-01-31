@@ -139,6 +139,64 @@ header {
 .main .block-container {
     padding-top: 2rem !important;
 }
+
+/* ===== HIDE FLOATING BUTTONS/WIDGETS (Bottom-right icons) ===== */
+
+/* Hide Streamlit chat/feedback widgets */
+.stChatFloatingInputContainer {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Hide floating action buttons */
+[data-testid="stChatFloatingActionButton"] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Hide all floating widgets bottom-right */
+.floating-button {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Hide Streamlit support widget */
+.support-widget {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Hide feedback widget */
+[data-testid="stChatMessageFeedback"] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Hide any button with position fixed bottom-right */
+button[style*="position: fixed"][style*="bottom"][style*="right"] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Hide bottom action bar */
+.stBottomBlockContainer {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Generic hide for bottom-right floating elements */
+div[style*="position: fixed"][style*="bottom: 0"][style*="right: 0"],
+div[style*="position: fixed"][style*="bottom: 1rem"][style*="right: 1rem"],
+div[style*="position: fixed"][style*="bottom: 20px"][style*="right: 20px"] {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Hide all iframes (external widgets) */
+iframe {
+    display: none !important;
+    visibility: hidden !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -186,14 +244,12 @@ def create_certificate_image(name, location, cert_id):
     width, height = template.size
     draw = ImageDraw.Draw(template)
     
-    # ===== FONT LOADING - NAME 100px, SCHOOL 120px =====
+    # ===== FONT LOADING =====
     try:
-        # Try Windows fonts first (for local testing)
         name_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 100)
         location_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 120)
         id_font = ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 85)
     except:
-        # Linux fonts (Streamlit Cloud)
         try:
             name_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 100)
             location_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 120)
@@ -203,17 +259,16 @@ def create_certificate_image(name, location, cert_id):
             location_font = ImageFont.load_default()
             id_font = ImageFont.load_default()
     
-    # Text color - PURE BLACK
     text_color = "#000000"
     
-    # Overlay NAME - 37% from top, size 100px
+    # Overlay NAME
     name_y = int(height * 0.37)
     bbox = draw.textbbox((0, 0), name, font=name_font)
     name_width = bbox[2] - bbox[0]
     name_x = (width - name_width) // 2
     draw.text((name_x, name_y), name, fill=text_color, font=name_font)
     
-    # Overlay LOCATION - 50% from top, size 120px
+    # Overlay LOCATION
     location_y = int(height * 0.50)
     bbox = draw.textbbox((0, 0), location, font=location_font)
     location_width = bbox[2] - bbox[0]
