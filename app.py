@@ -81,18 +81,18 @@ def create_certificate_image(name, location, cert_id):
     width, height = template.size
     draw = ImageDraw.Draw(template)
     
-    # ===== FONT LOADING - PERFECT BALANCED SIZE =====
+    # ===== FONT LOADING - PERFECT SIZE & SPACING =====
     try:
         # Try Windows fonts first (for local testing)
-        name_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 180)
-        location_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 140)
-        id_font = ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 90)
+        name_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 160)
+        location_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 120)
+        id_font = ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 85)
     except:
         # Linux fonts (Streamlit Cloud)
         try:
-            name_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 180)
-            location_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 140)
-            id_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 90)
+            name_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 160)
+            location_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 120)
+            id_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 85)
         except Exception as e:
             name_font = ImageFont.load_default()
             location_font = ImageFont.load_default()
@@ -101,15 +101,15 @@ def create_certificate_image(name, location, cert_id):
     # Text color - PURE BLACK
     text_color = "#000000"
     
-    # Overlay NAME
-    name_y = int(height * 0.37)
+    # Overlay NAME - positioned higher (35% from top)
+    name_y = int(height * 0.35)
     bbox = draw.textbbox((0, 0), name, font=name_font)
     name_width = bbox[2] - bbox[0]
     name_x = (width - name_width) // 2
     draw.text((name_x, name_y), name, fill=text_color, font=name_font)
     
-    # Overlay LOCATION (School)
-    location_y = int(height * 0.54)
+    # Overlay LOCATION - positioned lower (56% from top) - BIGGER GAP
+    location_y = int(height * 0.56)
     bbox = draw.textbbox((0, 0), location, font=location_font)
     location_width = bbox[2] - bbox[0]
     location_x = (width - location_width) // 2
