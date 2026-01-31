@@ -45,12 +45,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ===== EMAIL CONFIGURATION - SECURE =====
-# Use Streamlit Secrets for production
 try:
     EMAIL_SENDER = st.secrets["EMAIL_SENDER"]
     EMAIL_PASSWORD = st.secrets["EMAIL_PASSWORD"]
 except:
-    # Fallback for local testing only
     EMAIL_SENDER = "jebatlegacy@gegkotakinabalu.edu.my"
     EMAIL_PASSWORD = "xeit neeg ounj jnwv"
 # ========================================
@@ -63,7 +61,6 @@ def generate_cert_id():
 
 def create_certificate_image(name, location, cert_id):
     """Create certificate image with overlay text"""
-    # Try multiple template filenames
     template_paths = ["certificate_template.png", "template.jpg", "Sijil_Jebat__GEG.jpg"]
     template = None
     
@@ -84,20 +81,19 @@ def create_certificate_image(name, location, cert_id):
     width, height = template.size
     draw = ImageDraw.Draw(template)
     
-    # ===== FONT LOADING - PERFECT SIZE =====
+    # ===== FONT LOADING - PERFECT BALANCED SIZE =====
     try:
         # Try Windows fonts first (for local testing)
-        name_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 220)
-        location_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 160)
-        id_font = ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 100)
+        name_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 180)
+        location_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 140)
+        id_font = ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 90)
     except:
         # Linux fonts (Streamlit Cloud)
         try:
-            name_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 220)
-            location_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 160)
-            id_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 100)
+            name_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 180)
+            location_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 140)
+            id_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 90)
         except Exception as e:
-            # Absolute fallback
             name_font = ImageFont.load_default()
             location_font = ImageFont.load_default()
             id_font = ImageFont.load_default()
@@ -110,8 +106,6 @@ def create_certificate_image(name, location, cert_id):
     bbox = draw.textbbox((0, 0), name, font=name_font)
     name_width = bbox[2] - bbox[0]
     name_x = (width - name_width) // 2
-    
-    # Draw name
     draw.text((name_x, name_y), name, fill=text_color, font=name_font)
     
     # Overlay LOCATION (School)
@@ -119,8 +113,6 @@ def create_certificate_image(name, location, cert_id):
     bbox = draw.textbbox((0, 0), location, font=location_font)
     location_width = bbox[2] - bbox[0]
     location_x = (width - location_width) // 2
-    
-    # Draw location
     draw.text((location_x, location_y), location, fill=text_color, font=location_font)
     
     # Certificate ID
@@ -193,7 +185,7 @@ Google Educator Group Sabah & Kelantan
 if 'cert_generated' not in st.session_state:
     st.session_state.cert_generated = False
 
-# Check template silently (no public message)
+# Check template silently
 template_found = False
 for tpath in ["certificate_template.png", "template.jpg", "Sijil_Jebat__GEG.jpg"]:
     if os.path.exists(tpath):
