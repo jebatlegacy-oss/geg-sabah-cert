@@ -90,7 +90,7 @@ def create_certificate_image(name, location, cert_id):
     except:
         # Linux fonts (Streamlit Cloud)
         try:
-            name_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 120)
+            name_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 160)
             location_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 120)
             id_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 85)
         except Exception as e:
@@ -101,15 +101,15 @@ def create_certificate_image(name, location, cert_id):
     # Text color - PURE BLACK
     text_color = "#000000"
     
-    # Overlay NAME - 36% from top (moved down slightly)
-    name_y = int(height * 0.36)
+    # Overlay NAME - 30% from top (as requested)
+    name_y = int(height * 0.30)
     bbox = draw.textbbox((0, 0), name, font=name_font)
     name_width = bbox[2] - bbox[0]
     name_x = (width - name_width) // 2
     draw.text((name_x, name_y), name, fill=text_color, font=name_font)
     
-    # Overlay LOCATION - 54% from top (moved up) - CLOSER GAP!
-    location_y = int(height * 0.54)
+    # Overlay LOCATION - 50% from top (as requested)
+    location_y = int(height * 0.50)
     bbox = draw.textbbox((0, 0), location, font=location_font)
     location_width = bbox[2] - bbox[0]
     location_x = (width - location_width) // 2
