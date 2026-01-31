@@ -76,9 +76,9 @@ def create_certificate_image(name, location, cert_id):
     
     # Fonts - LOCATION FONT 120px
     try:
-        name_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 120)
-        location_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 100)
-        id_font = ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 120)
+        name_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 200)
+        location_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 150)
+        id_font = ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 150)
     except:
         name_font = ImageFont.load_default()
         location_font = ImageFont.load_default()
