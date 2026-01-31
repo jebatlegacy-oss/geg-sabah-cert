@@ -495,7 +495,7 @@ if st.session_state.cert_generated:
 st.markdown("---")
 st.markdown("""
 <p style="text-align: center; color: #9CA3AF; font-size: 0.8rem;">
-    Official Google Educator Groups Digital Achievement • 2026<br>
+    Official Google Educator Groups Sabah Digital Achievement • 2026<br>
     <span style="color: #10B981;">●</span> Verified Document
 </p>
 """, unsafe_allow_html=True)
