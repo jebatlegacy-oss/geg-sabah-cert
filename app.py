@@ -34,170 +34,159 @@ st.markdown("""
     padding: 1rem; border-radius: 0.5rem; margin: 1rem 0;
 }
 
-/* ===== HIDE ALL STREAMLIT & GITHUB BRANDING - ALL DEVICES ===== */
-
-/* Hide header toolbar completely */
+/* ===== HIDE ALL STREAMLIT & GITHUB BRANDING ===== */
 header[data-testid="stHeader"] {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Hide deploy button */
 .stDeployButton {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Hide main menu (hamburger) */
 #MainMenu {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Hide footer */
 footer {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Hide "Made with Streamlit" */
 footer:after {
     content: none !important;
     display: none !important;
 }
-
-/* Hide Streamlit viewer badge */
 .viewerBadge_container__1QSob {
     display: none !important;
     visibility: hidden !important;
 }
-
 .viewerBadge_container__r5tak {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Hide status widget */
 [data-testid="stStatusWidget"] {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Hide GitHub ribbon/fork button */
 iframe[title="GitHub"] {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Hide toolbar items */
 .stToolbar {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Hide "View app" text */
 .styles_viewerBadge__1yB5_ {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Hide GitHub corner octicon */
 .github-corner {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Additional cleanup for all Streamlit branding */
 [data-testid="stToolbar"] {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Hide manage app / settings gear */
 button[kind="header"] {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Force hide header area */
 header {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Hide all header buttons */
 .stApp header {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Ensure clean top - no spacing from hidden header */
 .stApp {
     padding-top: 0 !important;
 }
-
 .main .block-container {
     padding-top: 2rem !important;
 }
 
-/* ===== HIDE FLOATING BUTTONS/WIDGETS (Bottom-right icons) ===== */
-
-/* Hide Streamlit chat/feedback widgets */
+/* ===== HIDE FLOATING BUTTONS ===== */
 .stChatFloatingInputContainer {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Hide floating action buttons */
 [data-testid="stChatFloatingActionButton"] {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Hide all floating widgets bottom-right */
 .floating-button {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Hide Streamlit support widget */
 .support-widget {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Hide feedback widget */
 [data-testid="stChatMessageFeedback"] {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Hide any button with position fixed bottom-right */
 button[style*="position: fixed"][style*="bottom"][style*="right"] {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Hide bottom action bar */
 .stBottomBlockContainer {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Generic hide for bottom-right floating elements */
 div[style*="position: fixed"][style*="bottom: 0"][style*="right: 0"],
 div[style*="position: fixed"][style*="bottom: 1rem"][style*="right: 1rem"],
 div[style*="position: fixed"][style*="bottom: 20px"][style*="right: 20px"] {
     display: none !important;
     visibility: hidden !important;
 }
-
-/* Hide all iframes (external widgets) */
 iframe {
     display: none !important;
     visibility: hidden !important;
 }
 </style>
+""", unsafe_allow_html=True)
+
+# ===== JAVASCRIPT TO AGGRESSIVELY HIDE FLOATING ELEMENTS =====
+st.markdown("""
+<script>
+// Wait for page load
+window.addEventListener('load', function() {
+    // Remove all fixed position elements in bottom-right
+    setTimeout(function() {
+        const elements = document.querySelectorAll('*');
+        elements.forEach(el => {
+            const style = window.getComputedStyle(el);
+            if (style.position === 'fixed') {
+                const bottom = parseInt(style.bottom);
+                const right = parseInt(style.right);
+                // If element is in bottom-right corner (within 100px)
+                if (bottom >= 0 && bottom < 100 && right >= 0 && right < 100) {
+                    el.style.display = 'none !important';
+                    el.style.visibility = 'hidden !important';
+                    el.remove();
+                }
+            }
+        });
+    }, 1000);
+    
+    // Keep monitoring and removing (continuous check)
+    setInterval(function() {
+        const elements = document.querySelectorAll('*');
+        elements.forEach(el => {
+            const style = window.getComputedStyle(el);
+            if (style.position === 'fixed') {
+                const bottom = parseInt(style.bottom);
+                const right = parseInt(style.right);
+                if (bottom >= 0 && bottom < 100 && right >= 0 && right < 100) {
+                    el.remove();
+                }
+            }
+        });
+    }, 2000); // Check every 2 seconds
+});
+</script>
 """, unsafe_allow_html=True)
 
 st.markdown("""
