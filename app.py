@@ -33,6 +33,24 @@ st.markdown("""
     background-color: #fef3c7; border: 2px solid #fbbf24;
     padding: 1rem; border-radius: 0.5rem; margin: 1rem 0;
 }
+
+/* Hide Fork button and GitHub toolbar */
+header[data-testid="stHeader"] {
+    display: none !important;
+}
+.stDeployButton {
+    display: none !important;
+}
+#MainMenu {
+    visibility: hidden !important;
+}
+footer {
+    visibility: hidden !important;
+}
+/* Hide GitHub corner ribbon */
+iframe[title="GitHub"] {
+    display: none !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -108,7 +126,7 @@ def create_certificate_image(name, location, cert_id):
     name_x = (width - name_width) // 2
     draw.text((name_x, name_y), name, fill=text_color, font=name_font)
     
-    # Overlay LOCATION - 50% from top, size 120px (unchanged)
+    # Overlay LOCATION - 50% from top, size 120px
     location_y = int(height * 0.50)
     bbox = draw.textbbox((0, 0), location, font=location_font)
     location_width = bbox[2] - bbox[0]
@@ -238,44 +256,3 @@ with col2:
 if st.session_state.cert_generated:
     st.markdown("""
     <div class="success-box">
-        <h4 style="color: #065f46; margin: 0;">✅ Sijil Berjaya Dijana & Dihantar!</h4>
-        <p style="color: #047857; margin: 0.5rem 0 0 0; font-size: 0.9rem;">
-            Sijil telah dihantar ke email. Sila check inbox/spam folder.
-        </p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    st.image(st.session_state.cert_image, use_container_width=True)
-    
-    pdf_buffer = image_to_pdf(st.session_state.cert_image)
-    png_buffer = io.BytesIO()
-    st.session_state.cert_image.save(png_buffer, format='PNG', quality=95)
-    png_buffer.seek(0)
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        st.download_button(
-            label="📄 Muat Turun PDF",
-            data=pdf_buffer,
-            file_name=f"Sijil_{st.session_state.name.replace(' ', '_')}_GEG.pdf",
-            mime="application/pdf",
-            use_container_width=True
-        )
-    with col2:
-        st.download_button(
-            label="🖼️ Muat Turun PNG",
-            data=png_buffer,
-            file_name=f"Sijil_{st.session_state.name.replace(' ', '_')}_GEG.png",
-            mime="image/png",
-            use_container_width=True
-        )
-    
-    st.info(f"📧 **Email:** {st.session_state.email}\n\n🆔 **Certificate ID:** `{st.session_state.cert_id}`")
-
-st.markdown("---")
-st.markdown("""
-<p style="text-align: center; color: #9CA3AF; font-size: 0.8rem;">
-    Official Google Educator Groups Digital Achievement • 2026<br>
-    <span style="color: #10B981;">●</span> Verified Document | Created by <a href="http://www.jebatlegacy.vip" target="_blank" style="color: #6366f1;">Ts.Jebat</a>
-</p>
-""", unsafe_allow_html=True)
