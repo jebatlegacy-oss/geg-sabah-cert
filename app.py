@@ -81,16 +81,16 @@ def create_certificate_image(name, location, cert_id):
     width, height = template.size
     draw = ImageDraw.Draw(template)
     
-    # ===== FONT LOADING - PERFECT SIZE =====
+    # ===== FONT LOADING - NAME 100px, SCHOOL 120px =====
     try:
         # Try Windows fonts first (for local testing)
-        name_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 160)
+        name_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 100)
         location_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 120)
         id_font = ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 85)
     except:
         # Linux fonts (Streamlit Cloud)
         try:
-            name_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 160)
+            name_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 100)
             location_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 120)
             id_font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 85)
         except Exception as e:
@@ -101,14 +101,14 @@ def create_certificate_image(name, location, cert_id):
     # Text color - PURE BLACK
     text_color = "#000000"
     
-    # Overlay NAME - 33% from top (adjusted down from 30%)
-    name_y = int(height * 0.33)
+    # Overlay NAME - 45% from top, size 100px
+    name_y = int(height * 0.45)
     bbox = draw.textbbox((0, 0), name, font=name_font)
     name_width = bbox[2] - bbox[0]
     name_x = (width - name_width) // 2
     draw.text((name_x, name_y), name, fill=text_color, font=name_font)
     
-    # Overlay LOCATION - 50% from top (unchanged)
+    # Overlay LOCATION - 50% from top, size 120px (unchanged)
     location_y = int(height * 0.50)
     bbox = draw.textbbox((0, 0), location, font=location_font)
     location_width = bbox[2] - bbox[0]
