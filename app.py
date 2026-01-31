@@ -74,11 +74,11 @@ def create_certificate_image(name, location, cert_id):
     width, height = template.size
     draw = ImageDraw.Draw(template)
     
-    # Fonts - LOCATION FONT 65px
+    # Fonts - LOCATION FONT 120px
     try:
         name_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 120)
         location_font = ImageFont.truetype("C:/Windows/Fonts/arialbd.ttf", 100)
-        id_font = ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 20)
+        id_font = ImageFont.truetype("C:/Windows/Fonts/arial.ttf", 120)
     except:
         name_font = ImageFont.load_default()
         location_font = ImageFont.load_default()
